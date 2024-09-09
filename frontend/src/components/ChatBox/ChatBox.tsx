@@ -23,7 +23,7 @@ const first_message =
 export const ChatBox: React.FC = () => {
     const [isMaximized, setIsMaximized] = React.useState<boolean>(false);
 
-    const [user_id, setUser_id] = React.useState<number>(1234);
+    const user_id = React.useRef<number>(1234).current;
     const [data, setData] = React.useState<ChatData>({
         page_number: 1,
         messages: [],
@@ -72,7 +72,7 @@ export const ChatBox: React.FC = () => {
 
     const handleEdit = async (message: Message) => {
         if (selectedMessage && selectedMessage.id === message.id) {
-            if (updatedText == message.message) {
+            if (updatedText === message.message) {
                 return;
             }
 
@@ -131,6 +131,7 @@ export const ChatBox: React.FC = () => {
 
     React.useEffect(() => {
         loadMessages();
+        // eslint-disable-next-line 
     }, [user_id, context]);
 
     return (
