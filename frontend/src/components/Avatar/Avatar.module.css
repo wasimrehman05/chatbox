@@ -1,0 +1,12 @@
+span.avatar,
+span.avatar img {
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+    align-items: center;
+    overflow: hidden;
+    background-color: #BDAFF5;
+    object-fit: cover;
+}
+

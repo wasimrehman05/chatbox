@@ -8,6 +8,10 @@ body {
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: ui-sans-serif -apple-system "system-ui"
+    "Segoe UI Variable Display"
+    "Segoe UI"
+    Helvetica "Apple Color Emoji"
+    Arial sans-serif "Segoe UI Emoji"
+    "Segoe UI Symbol"
 }

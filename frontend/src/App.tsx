@@ -1,6 +1,6 @@
 import React from "react";
 import "./App.css";
-import { ChatBox } from "./components/ChatBox";
+import { ChatBox } from "./components/ChatBox/ChatBox";
 
 function App(): JSX.Element {
   return (

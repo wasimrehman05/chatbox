@@ -1,0 +1,175 @@
+.chatBox {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    border-radius: 10px;
+    background-color: #FFFFFF;
+    padding: 10px 15px;
+    transition: width 0.3s ease-in-out, height 0.3s ease-in-out;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+}
+
+.boxController {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.boxController div {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+span.icons {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+}
+
+span.icons:hover {
+    background-color: #f5f5f5;
+}
+
+.chatWindow {
+    height: calc(100% - (102.5px + 30px));
+    width: 100%;
+    overflow: scroll;
+}
+
+.chatHeader {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 0;
+}
+
+.chatHeader h3 {
+    margin-top: 10px;
+}
+
+.chatHeader p {
+    font-size: 12px;
+    color: #9FA7B4;
+    font-weight: 500;
+}
+
+.chatBody {
+    width: 100%;
+}
+
+.chatBody .message.ava {
+    display: flex;
+    justify-content: flex-start;
+    margin: 10px 0;
+    gap: 10px;
+    width: 100%;
+}
+
+.chatBody>.message>p {
+    text-wrap: wrap;
+    font-size: 10px;
+    font-weight: 500;
+    padding: 12px;
+    text-align: right;
+    color: #FFFFFF;
+    border-radius: 20px 0 20px 20px;
+    background-color: #7D37FF;
+}
+
+.chatBody>.message {
+    justify-content: flex-end;
+    margin: 10px 0;
+}
+
+.chatBody>.message.ava>p {
+    color: #000000;
+    text-align: left;
+    border-radius: 0 20px 20px 20px;
+    background-color: #F8FAFA;
+}
+
+
+
+.chatInput {
+    border-top: 1px solid #f5f5f5;
+    margin-top: 10px;
+}
+
+
+.inputBox,
+.contextBox,
+.chatController {
+    display: flex;
+    align-items: center;
+}
+
+.chatFooter,
+.inputBox {
+    margin: 15px 0;
+}
+
+.inputBox textarea {
+    flex: 1;
+    margin: auto 10px;
+    padding: 8px;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    font-weight: 500;
+    height: 35px;
+}
+
+.inputBox textarea:focus {
+    outline: 1px solid #9FA7B4;
+}
+
+.inputBox textarea::placeholder {
+    font-size: small;
+    font-weight: 500;
+    color: #9FA7B4;
+    padding-top: 3px;
+
+}
+
+.chatFooter {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.contextBox .context {
+    color: grey;
+    font-size: small;
+    font-weight: 500;
+    color: #9FA7B4;
+}
+
+.contextBox select {
+    outline: none;
+    font-size: small;
+    font-weight: 510;
+    padding: 3px;
+    margin-left: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    border: 1px solid #f5f5f5;
+    background-color: #F7FBFA;
+}
+
+
+.chatController span.icons:first-child svg {
+    position: absolute;
+    top: 3px;
+}
+
+.chatController span.icons:last-child svg {
+    position: absolute;
+    right: 3px;
+}
