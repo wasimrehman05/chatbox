@@ -51,7 +51,7 @@ A full-stack chat application with a backend implemented using FastAPI and an in
 2. **Install Dependencies**
 
     ```bash
-    npm install
+    npm install --legacy-peer-deps
     ```
 
 3. **Run the Application**

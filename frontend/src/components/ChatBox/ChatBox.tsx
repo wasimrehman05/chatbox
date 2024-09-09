@@ -7,40 +7,35 @@ import { SidebarLeftIcon } from '../../icons/SIdeBarLeft';
 import { SettingIcon } from '../../icons/Setting';
 import { SendIcon } from '../../icons/Send';
 import { Avatar } from '../Avatar/Avatar';
+import { fetchMessages, Message } from '../../services/FetchMessages';
+import { sendMessage } from '../../services/SendMessage';
+import { updateMessage } from '../../services/updateMessage';
+import { deleteMessage } from '../../services/deleteMessage';
 
-type Message = {
-    ava?: string;
-    user?: string;
+type ChatData = {
+    page_number: number;
+    messages: Message[];
 };
 
-const temp_data: Message[] = [
-    {
-        ava: 'Hi jane, \n Amazing how Mosey is simplifying state compliance \n for businesses across the board!',
-    },
-    { user: 'Hi, thanks for connecting!' },
-    {
-        ava: 'Hi jane, \n Amazing how Mosey is simplifying state compliance \n for businesses across the board!',
-    },
-    { user: 'Hi, thanks for connecting!' },
-    {
-        ava: 'Hi jane, \n Amazing how Mosey is simplifying state compliance \n for businesses across the board!',
-    },
-    {
-        ava: 'Hi jane, \n Amazing how Mosey is simplifying state compliance \n for businesses across the board!',
-    },
-    { user: 'Hi, thanks for connecting!' },
-    {
-        ava: 'Hi jane, \n Amazing how Mosey is simplifying state compliance \n for businesses across the board!',
-    },
-];
+const first_message =
+    'Hi jane, \n Amazing how Mosey is simplifying state compliance \n for businesses across the board!';
 
 export const ChatBox: React.FC = () => {
     const [isMaximized, setIsMaximized] = React.useState<boolean>(false);
-    const [data, setData] = React.useState<Message[]>([...temp_data]);
+
+    const [user_id, setUser_id] = React.useState<number>(1234);
+    const [data, setData] = React.useState<ChatData>({
+        page_number: 1,
+        messages: [],
+    });
+    const [context, setContext] = React.useState<string>('onboarding');
     const chatRef = React.useRef<HTMLDivElement | null>(null);
     const [text, setText] = React.useState<string>('');
+    const [selectedMessage, setSelectedMessage] =
+        React.useState<Message | null>(null);
+    const [updatedText, setUpdatedText] = React.useState<string>('');
 
-    const handleKeyPress = (
+    const handleKeyPress = async (
         event: React.KeyboardEvent<HTMLTextAreaElement>
     ) => {
         if (event.key === 'Enter') {
@@ -49,7 +44,7 @@ export const ChatBox: React.FC = () => {
                 event.preventDefault();
             } else {
                 event.preventDefault();
-                sendMessage();
+                await handleSend();
             }
         }
     };
@@ -57,14 +52,58 @@ export const ChatBox: React.FC = () => {
     const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         setText(event.target.value);
     };
+    const handleTextChange = (
+        event: React.ChangeEvent<HTMLTextAreaElement>
+    ) => {
+        setUpdatedText(event.target.value);
+    };
 
-    const sendMessage = () => {
-        setData([...data, { user: text }]);
+    const handleSend = async () => {
+        if (!text) {
+            return;
+        }
+        const response = await sendMessage({ user_id, context, message: text });
+        setData((prevData) => ({
+            ...prevData,
+            messages: [...prevData.messages, response],
+        }));
         setText('');
     };
 
-    const editText = (index: number, value: string) => {
-        setText(value);
+    const handleEdit = async (message: Message) => {
+        if (selectedMessage && selectedMessage.id === message.id) {
+            if (updatedText == message.message) {
+                return;
+            }
+
+            const response: Message = await updateMessage({
+                message_id: selectedMessage.id,
+                message: updatedText,
+            });
+
+            if (response?.id === selectedMessage.id) {
+                setUpdatedText('');
+                setSelectedMessage(null);
+                loadMessages();
+            }
+        }
+    };
+
+    const handleDelete = async (message: Message) => {
+        if (selectedMessage && selectedMessage.id === message.id) {
+            const response = await deleteMessage(message.id);
+            if (response) {
+                setUpdatedText('');
+                setSelectedMessage(null);
+                loadMessages();
+            }
+        }
+    };
+
+    const handleContextChange = (
+        event: React.ChangeEvent<HTMLSelectElement>
+    ) => {
+        setContext(event.target.value);
     };
 
     const inStyleCss = {
@@ -72,11 +111,27 @@ export const ChatBox: React.FC = () => {
         height: isMaximized ? `calc(100% - 40px)` : '568px',
     };
 
+    const loadMessages = async () => {
+        try {
+            const response = await fetchMessages(user_id, context, 10);
+            setData((prevData) => ({
+                ...prevData,
+                messages: response.messages, // Use spread operator to merge messages
+            }));
+        } catch (error) {
+            console.error('Failed to fetch messages', error);
+        }
+    };
+
     React.useEffect(() => {
         if (chatRef.current) {
             chatRef.current.scrollTop = chatRef.current.scrollHeight;
         }
     }, [data]);
+
+    React.useEffect(() => {
+        loadMessages();
+    }, [user_id, context]);
 
     return (
         <div className={styles.chatBox} style={inStyleCss}>
@@ -98,7 +153,11 @@ export const ChatBox: React.FC = () => {
                     </span>
                 </div>
             </div>
-            <div className={styles.chatWindow} data-testid="chat-window" ref={chatRef}>
+            <div
+                className={styles.chatWindow}
+                data-testid="chat-window"
+                ref={chatRef}
+            >
                 <div className={styles.chatHeader}>
                     <Avatar
                         src="ava.png"
@@ -112,21 +171,97 @@ export const ChatBox: React.FC = () => {
                     <p>Ask me anything or pick a place to start</p>
                 </div>
                 <div className={styles.chatBody}>
-                    {data.map((item, index) => {
-                        const value = item.ava ?? item.user ?? '';
+                    <div
+                        className={`${styles.message}  ${styles.ava}`}
+                        key={`ava-${0}`}
+                    >
+                        <Avatar
+                            src="ava.png"
+                            alt="Ava Image"
+                            height={'30px'}
+                            width={'30px'}
+                            scale={1.8}
+                            top={'11px'}
+                        />
+                        <p
+                            dangerouslySetInnerHTML={{
+                                __html: first_message.replace(/\n/g, '<br />'),
+                            }}
+                        />
+                    </div>
+                    {data.messages.map((item) => {
                         return (
-                            <div
-                                className={`${styles.message} ${
-                                    item.ava ? styles.ava : ''
-                                }`}
-                                key={index}
-                                onDoubleClick={
-                                    item.user
-                                        ? () => editText(index, value)
-                                        : undefined
-                                }
-                            >
-                                {item.ava && (
+                            <>
+                                <div
+                                    className={`${styles.message}`}
+                                    data-testid="chat-message"
+                                    key={`user-${item.id}`}
+                                    onDoubleClick={() => {
+                                        setUpdatedText(item.message);
+                                        setSelectedMessage(item);
+                                    }}
+                                >
+                                    <div
+                                        className={styles.popup}
+                                        style={{
+                                            ...inStyleCss,
+                                            display:
+                                                item.id === selectedMessage?.id
+                                                    ? 'flex'
+                                                    : 'none',
+                                        }}
+                                    >
+                                        <div>
+                                            <span
+                                                style={{
+                                                    cursor: 'pointer',
+                                                    position: 'absolute',
+                                                    right: '8px',
+                                                    top: '8px',
+                                                }}
+                                                onClick={() => {
+                                                    setUpdatedText('');
+                                                    setSelectedMessage(null);
+                                                }}
+                                            >
+                                                <CloseIcon />
+                                            </span>
+                                            <textarea
+                                                value={updatedText}
+                                                onChange={handleTextChange}
+                                                placeholder="Update your message"
+                                            />
+                                            <span>
+                                                <button
+                                                    onClick={() =>
+                                                        handleEdit(item)
+                                                    }
+                                                >
+                                                    Edit
+                                                </button>
+                                                <button
+                                                    onClick={() =>
+                                                        handleDelete(item)
+                                                    }
+                                                >
+                                                    Delete
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <p
+                                        dangerouslySetInnerHTML={{
+                                            __html: item.message.replace(
+                                                /\n/g,
+                                                '<br />'
+                                            ),
+                                        }}
+                                    />
+                                </div>
+                                <div
+                                    className={`${styles.message}  ${styles.ava}`}
+                                    key={`ava-${item.id}`}
+                                >
                                     <Avatar
                                         src="ava.png"
                                         alt="Ava Image"
@@ -135,13 +270,16 @@ export const ChatBox: React.FC = () => {
                                         scale={1.8}
                                         top={'11px'}
                                     />
-                                )}
-                                <p
-                                    dangerouslySetInnerHTML={{
-                                        __html: value.replace(/\n/g, '<br />'),
-                                    }}
-                                />
-                            </div>
+                                    <p
+                                        dangerouslySetInnerHTML={{
+                                            __html: item.reply.replace(
+                                                /\n/g,
+                                                '<br />'
+                                            ),
+                                        }}
+                                    />
+                                </div>
+                            </>
                         );
                     })}
                 </div>
@@ -162,7 +300,11 @@ export const ChatBox: React.FC = () => {
                 <div className={styles.chatFooter}>
                     <div className={styles.contextBox}>
                         <span className={styles.context}>Context</span>
-                        <select name="context">
+                        <select
+                            name="context"
+                            value={context}
+                            onChange={handleContextChange}
+                        >
                             <option value="onboarding">Onboarding</option>
                             <option value="support">Support</option>
                             <option value="sales">Sales</option>

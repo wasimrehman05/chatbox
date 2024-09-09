@@ -28,7 +28,7 @@ async def test_read_messages(client: AsyncClient):
     response = await client.get("/api/messages", params={
         "user_id": 12345,
         "context": "onboarding",
-        "skip_count": 0
+        "page_number": 1
     })
     assert response.status_code == 200
     data = response.json()
