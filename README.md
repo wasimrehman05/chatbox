@@ -14,29 +14,26 @@ A full-stack chat application with a backend implemented using FastAPI and an in
 
 1. **Clone the Repository**
 
-    ```bash
-    git clone https://github.com/wasimrehman05/chatbox.git
-    cd chatbox/backend
-    ```
-
+   ```bash
+   git clone https://github.com/wasimrehman05/chatbox.git
+   cd chatbox/backend
+   ```
 2. **Create and Activate a Virtual Environment**
 
-    ```bash
-    python3 -m venv env
-    source env/bin/activate  # On Windows use `env\Scripts\activate`
-    ```
-
+   ```bash
+   python3 -m venv env
+   source env/bin/activate  # On Windows use `env\Scripts\activate`
+   ```
 3. **Install Dependencies**
 
-    ```bash
-    pip install -r requirements.txt
-    ```
-
+   ```bash
+   pip install -r requirements.txt
+   ```
 4. **Run the Server**
 
-    ```bash
-    uvicorn app:main:app --reload
-    ```
+   ```bash
+   uvicorn app:main:app --reload
+   ```
 
    The server will be available at `http://127.0.0.1:8000`.
 
@@ -44,21 +41,19 @@ A full-stack chat application with a backend implemented using FastAPI and an in
 
 1. **Navigate to the Frontend Directory**
 
-    ```bash
-    cd ../frontend
-    ```
-
+   ```bash
+   cd ../frontend
+   ```
 2. **Install Dependencies**
 
-    ```bash
-    npm install --legacy-peer-deps
-    ```
-
+   ```bash
+   npm install -f
+   ```
 3. **Run the Application**
 
-    ```bash
-    npm start
-    ```
+   ```bash
+   npm start
+   ```
 
    The frontend will be available at `http://localhost:3000`.
 
@@ -70,28 +65,27 @@ A full-stack chat application with a backend implemented using FastAPI and an in
 - **Method**: `POST`
 - **Request Body**:
 
-    ```json
-    {
-      "message": "string",
-      "user_id": "integer",
-      "context": "string"
-    }
-    ```
-
+  ```json
+  {
+    "message": "string",
+    "user_id": "integer",
+    "context": "string"
+  }
+  ```
 - **Response**:
 
-    ```json
-    {
-      "id": "string",
-      "message": "string",
-      "reply": "string",
-      "user_id": "integer",
-      "context": "string",
-      "created_at": "string",
-      "updated_at": "string",
-      "deleted_at": "string"
-    }
-    ```
+  ```json
+  {
+    "id": "string",
+    "message": "string",
+    "reply": "string",
+    "user_id": "integer",
+    "context": "string",
+    "created_at": "string",
+    "updated_at": "string",
+    "deleted_at": "string"
+  }
+  ```
 
 ### Delete Message
 
@@ -99,9 +93,9 @@ A full-stack chat application with a backend implemented using FastAPI and an in
 - **Method**: `DELETE`
 - **Response**:
 
-    ```json
-    true
-    ```
+  ```json
+  true
+  ```
 
 ### Retrieve Messages
 
@@ -109,30 +103,29 @@ A full-stack chat application with a backend implemented using FastAPI and an in
 - **Method**: `GET`
 - **Query Parameters**:
 
-    ```plaintext
-    user_id=integer
-    context=string
-    skip_count=integer
-    ```
-
+  ```plaintext
+  user_id=integer
+  context=string
+  skip_count=integer
+  ```
 - **Response**:
 
-    ```json
-    {
-      "messages": [
-        {
-          "id": "string",
-          "message": "string",
-          "reply": "string",
-          "user_id": "integer",
-          "context": "string",
-          "created_at": "string",
-          "updated_at": "string",
-          "deleted_at": "string"
-        }
-      ]
-    }
-    ```
+  ```json
+  {
+    "messages": [
+      {
+        "id": "string",
+        "message": "string",
+        "reply": "string",
+        "user_id": "integer",
+        "context": "string",
+        "created_at": "string",
+        "updated_at": "string",
+        "deleted_at": "string"
+      }
+    ]
+  }
+  ```
 
 ## Testing
 
@@ -140,15 +133,14 @@ A full-stack chat application with a backend implemented using FastAPI and an in
 
 1. **Install Testing Dependencies**
 
-    ```bash
-    pip install pytest pytest-asyncio httpx
-    ```
-
+   ```bash
+   pip install pytest pytest-asyncio httpx
+   ```
 2. **Run the Tests**
 
-    ```bash
-    pytest
-    ```
+   ```bash
+   pytest
+   ```
 
    This will run all the tests defined in the `tests/` directory.
 
